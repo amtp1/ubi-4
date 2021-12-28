@@ -16,6 +16,6 @@ async def stat(message: Message):
             f"<code>|--</code><i>Общее количество</i>: {all_users.__len__()}\n"
             f"<code>|--</code><i>Активные за день</i>: {last_day}\n"
             f"<code>|--</code><i>Активировали бомбер</i>: {is_bomber}\n"
-            f"<code>|--</code><i>С приоритетным статусом:</i>: {prioritety_status}\n"
+            f"<code>|--</code><i>С приоритетным статусом</i>: {prioritety_status}\n"
             f"<code>|--</code><i>Заблокировали:</i>: {blocked_users}")
     return await message.answer(text=stat_page)
