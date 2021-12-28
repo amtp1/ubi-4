@@ -8,6 +8,7 @@ class UserData(models.Model):
     language = models.CharField(max_length=16, null=True)
     username = models.CharField(max_length=150, null=True)
     is_bomber = models.BooleanField(null=True)
+    is_blocked = models.BooleanField(null=True)
 
 class BomberData(models.Model):
     id = models.IntegerField(primary_key=True)
