@@ -56,7 +56,7 @@ class Phone:
                     else:
                         await self.session.post(url=k % self.phone, timeout=3)
                 
-                if self.count_circles.isdigit():
+                if self.count_circles!="∞":
                     self.count_circles = int(self.count_circles) - 1
                     if self.count_circles == 0:
                         await self.bomber_data.update(circles=self.count_circles)
