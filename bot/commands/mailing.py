@@ -1,8 +1,10 @@
+from asyncio import sleep
 from datetime import datetime as dt
 
 from aiogram.types import Message
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.utils.exceptions import ChatNotFound, UserDeactivated, BotBlocked
+from orm.exceptions import MultipleMatches
 
 from objects import globals
 from objects.globals import dp, bot
@@ -26,12 +28,17 @@ async def set_mailing_text(message: Message, state: FSMContext):
     globals.is_mailing = True
     users = await UserData.objects.all()
     start_time = dt.now()
-    for user in users:
+    for i, user in enumerate(users):
+        if i % 5 == 0:
+            await sleep(1)
         try:
             await bot.send_message(chat_id=user.username, text=message.text)
         except (BotBlocked, UserDeactivated, ChatNotFound):
-            blocked_user = await UserData.objects.get(username=user.username)
-            await blocked_user.update(is_blocked=True)
+            try:
+                blocked_user = await UserData.objects.get(username=str(user.username))
+                await blocked_user.update(is_blocked=True)
+            except MultipleMatches:
+                pass
     globals.is_mailing = False
     end_time = int((dt.now() - start_time).total_seconds())
     return await message.answer(text="Рассылка завершена!\n"f"⏱Минут: {end_time // 60} Секунд: {end_time % 60}")
