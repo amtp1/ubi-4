@@ -1,0 +1,16 @@
+__pycache__
+
+Lib/
+Scripts/
+Include/
+
+config.yaml
+services.yaml
+
+swapdata/
+debug/
+migrations/
+
+tests.py
+
+db.sqlite3
