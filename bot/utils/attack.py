@@ -20,7 +20,7 @@ class Phone:
         self.is_process: bool = True
         self.user_id = user_id
         self.phone = phone
-        self.count_circles: int = 0
+        self.count_circles: str = None
         self.bomber_data: BomberData = None
         self.session: ClientSession = ClientSession()
         self.headers = {"User-Agent": (
@@ -57,7 +57,7 @@ class Phone:
                         await self.session.post(url=k % self.phone, timeout=3)
                 
                 if self.count_circles.isdigit():
-                    self.count_circles-=1
+                    self.count_circles = int(self.count_circles) - 1
                     if self.count_circles == 0:
                         await self.bomber_data.update(circles=self.count_circles)
                         return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
@@ -65,7 +65,7 @@ class Phone:
         except Exception as e:
             logger.error(e)
             await self.session.close()
-            await self.bomber_data.update(circles=self.count_circles)
+            await self.bomber_data.update(circles=str(self.count_circles))
             return await bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message_id+1,
                                 text=f"<b><i>Error message</i></b>: {e}")
 
