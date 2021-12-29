@@ -1,0 +1,26 @@
+body{
+    background-image: url(../images/background.jpg);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.container{
+    width: 350px;
+}
+
+h1{
+    background-image: url(../images/bull.png);
+    width: 320px; 
+    height: 200px;
+}
+
+#profile-photo{
+    background-image: url(../images/bull.png);
+    width: 110px; 
+    height: 100px;
+}
+
+.mr-3{
+    width: 110px;
+    height: 115px;
+}
