@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+
+{% block body %}
+&nbsp;
+<div class="container py-5 container-fluid" style="background-color: white;">
+    <h2 class="mb-4"><span class="badge badge-secondary w-100">Профиль</span></h2>
+    <div class="media">
+        <img class="mr-3 rounded-circle" src="{% static 'images/bull.png' %}" alt="Generic placeholder image">
+        <div class="media-body">
+            <h5 class="mt-0 align-self-center"><span class="badge badge-pill badge-dark w-100">User ID: {{auth_user.username}}</span></h5>
+            <h5 class="mt-0 align-self-center"><span class="badge badge-pill badge-info w-100">Баланс: {{user_data.balance}} ₽</span></h5>
+            <h5 class="mt-0 align-self-center"><span class="badge badge-pill badge-light w-100">Язык: {{user_data.language}}</span></h5>
+        </div>
+    </div>
+    &nbsp;
+    <div class="alert alert-success" role="alert">
+        Последний номер телефона: <b>{{bomber_data.last_phone}}</b>
+    </div>
+    <div class="alert alert-success" role="alert">
+        Дата последней атаки: <b>{{bomber_data.last_launch|date:'Y/m/d H:i:s'}}</b>
+    </div>
+    <div class="alert alert-success" role="alert">
+        Количество кругов: <b>{{bomber_data.circles}}</b>
+    </div>
+    <form method="post" action="logout">
+        {% csrf_token %}
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group w-100" role="group" aria-label="First group">
+                <button type="submit" class="btn btn-danger" name="login-button">Выйти</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
