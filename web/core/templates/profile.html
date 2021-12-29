@@ -16,13 +16,16 @@
     </div>
     &nbsp;
     <div class="alert alert-success" role="alert">
-        Последний номер телефона: <b>{{bomber_data.last_phone}}</b>
+        Последний номер телефона
+        <p><b>{{bomber_data.last_phone}}</b></p>
     </div>
     <div class="alert alert-success" role="alert">
-        Дата последней атаки: <b>{{bomber_data.last_launch|date:'Y/m/d H:i:s'}}</b>
+        Дата последней атаки
+        <p><b>{{bomber_data.last_launch|date:'Y/m/d H:i:s'}}</b></p>
     </div>
     <div class="alert alert-success" role="alert">
-        Количество кругов: <b>{{bomber_data.circles}}</b>
+        Количество кругов
+        <p><b>{{bomber_data.circles}}</b></p>
     </div>
     <form method="post" action="logout">
         {% csrf_token %}
