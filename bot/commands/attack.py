@@ -15,7 +15,7 @@ async def attack_ru(message: Message):
     user_data = await UserData.objects.get(username=user_id)
     language = Language(user_id=user_id, symbol=user_data.language)
     if not user_data.is_bomber:
-        count_circles: int = 30
+        count_circles: str = "30"
         await BomberData.objects.create(
             username=str(user_id), circles=count_circles)
         bomber_status = await UserData.objects.get(username=str(user_id))
@@ -30,7 +30,7 @@ async def attack_ru(message: Message):
     user_data = await UserData.objects.get(username=user_id)
     language = Language(user_id=user_id, symbol=user_data.language)
     if not user_data.is_bomber:
-        count_circles: int = 30
+        count_circles: str = "30"
         await BomberData.objects.create(
             username=str(user_id), circles=count_circles)
         bomber_status = await UserData.objects.get(username=str(user_id))
