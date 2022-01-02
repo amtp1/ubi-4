@@ -26,7 +26,8 @@ class Phone:
         self.headers = {"User-Agent": (
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/93.0.4577.63 Safari/537.36")}
+                "Chrome/93.0.4577.63 Safari/537.36"),
+                "Accept": "*/*"}
 
     def load_services(self):
         CONFIG_NAME = r"%s/services.yaml" % SERVICES_DIR
@@ -48,14 +49,14 @@ class Phone:
                 for k,v in self.services.items():
                     if not v["formating"]:
                         if "data" in v:
-                            data = (v["data"] % self.phone).replace("'", "\"")
+                            data = (v["data"] % self.phone[-10:]).replace("'", "\"")
                             await self.session.post(url=k, data=loads(data), headers=self.headers, timeout=3)
                         elif "json" in v:
-                            json = (v["json"] % self.phone).replace("'", "\"")
+                            json = (v["json"] % self.phone[-10:]).replace("'", "\"")
                             await self.session.post(url=k, json=loads(json), headers=self.headers, timeout=3)
                     else:
                         await self.session.post(url=k % self.phone, timeout=3)
-                
+
                 if self.count_circles!="∞":
                     self.count_circles = int(self.count_circles) - 1
                     if self.count_circles == 0:
