@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as bs
 
 from objects.globals import dp
 
-@dp.message_handler(commands=["btc", "bnb", "usd", "eth"])
+@dp.message_handler(commands=["btc", "bnb", "eth"])
 async def btc(message: Message):
     symbol = message.text.replace("/", "")
     response = urllib.request.urlopen(F"https://www.binance.com/en/trade/{symbol.upper()}_USDT")
