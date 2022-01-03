@@ -81,6 +81,6 @@ class Language:
             return None
 
     def extend_keyboards(self):
-        keyboard = KEYBOARDS["ENG"]
-        keyboard[:].extend(KEYBOARDS["RU"])
+        keyboard = KEYBOARDS["ENG"][:]
+        keyboard.extend(KEYBOARDS["RU"])
         return keyboard
