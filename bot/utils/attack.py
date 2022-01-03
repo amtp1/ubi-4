@@ -73,5 +73,6 @@ class Phone:
     async def stop(self):
         self.is_process = False
         await sleep(1)
-        await self.session.close()
-        logger.info("Attack stopped -> %s" % (self.user_id,))
+        if self.session is not None:
+            logger.info("Attack stopped -> %s" % (self.user_id,))
+            return await self.session.close()
