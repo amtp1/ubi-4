@@ -5,9 +5,12 @@ from aiogram.types import Message
 from bs4 import BeautifulSoup as bs
 
 from objects.globals import dp
+from decorators.decorators import *
 
 @dp.message_handler(commands=["btc", "bnb", "eth"])
+@update
 async def btc(message: Message):
+    message: Message = message[0]
     symbol = message.text.replace("/", "")
     response = urllib.request.urlopen(F"https://www.binance.com/en/trade/{symbol.upper()}_USDT")
     content = bs(response.read(), "html.parser").find(id="__APP_DATA")
