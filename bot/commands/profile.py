@@ -10,6 +10,7 @@ from decorators.decorators import *
 async def profile_eng(message: Message):
     message: Message = message[0]
     user_id: int = message.from_user.id
+    auth_user = await AuthUser.objects.get(username=user_id)
     user_data = await UserData.objects.get(username=user_id)
     inline_keybaord = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -32,7 +33,8 @@ async def profile_eng(message: Message):
     profile_page: str = (
         f"<b>Profile info</b>\n"
         f"<code>|-</code>User\n"
-        f"\t\t\t\t<code>|--</code>User ID ➜ {user_id}\n"
+        f"\t\t\t\t<code>|--</code>User ID ➜ <code>{user_id}</code>\n"
+        f"\t\t\t\t<code>|--</code>Password ➜ <code>{auth_user.password}</code>\n"
         f"\t\t\t\t<code>|--</code>Language ➜ {user_data.language}\n"
         f"\t\t\t\t<code>|--</code>Balance ➜ {float(user_data.balance)}\n"
         f"{bomber_page}"
@@ -42,6 +44,7 @@ async def profile_eng(message: Message):
 @dp.message_handler(lambda message: message.text=="👤Мой профиль")
 async def profile_ru(message: Message):
     user_id: int = message.from_user.id
+    auth_user = await AuthUser.objects.get(username=user_id)
     user_data = await UserData.objects.get(username=user_id)
     inline_keybaord = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -64,7 +67,8 @@ async def profile_ru(message: Message):
     profile_page: str = (
         f"<b>Информация профиля</b>\n"
         f"<code>|-</code>User\n"
-        f"\t\t\t\t<code>|--</code>User ID ➜ {user_id}\n"
+        f"\t\t\t\t<code>|--</code>ID пользователя ➜ <code>{user_id}</code>\n"
+        f"\t\t\t\t<code>|--</code>Пароль ➜ <code>{auth_user.password}</code>\n"
         f"\t\t\t\t<code>|--</code>Язык ➜ {user_data.language}\n"
         f"\t\t\t\t<code>|--</code>Баланс ➜ {float(user_data.balance)}\n"
         f"{bomber_page}"
