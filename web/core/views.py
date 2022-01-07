@@ -14,6 +14,8 @@ def index(request):
     return redirect("login_user")
 
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect("login_user")
     user_pk = request.session["_auth_user_id"]
     auth_user: QuerySet = User.objects.get(pk=user_pk)
     user_data: QuerySet = UserData.objects.get(pk=user_pk)
@@ -23,7 +25,6 @@ def profile(request):
 
 def login_user(request):
     message: str = ""
-    print(request)
     if request.POST:
         username = request.POST["username"]
         password = request.POST["password"]
@@ -34,7 +35,6 @@ def login_user(request):
             user: QuerySet = User.objects.filter(username=username, password=password)
             if user.exists():
                 user: QuerySet = user.get()
-                print(user.last_login)
                 user.last_login = dt.now()
                 user.save()
                 login(request, user)
