@@ -10,6 +10,10 @@ class UserData(models.Model):
     is_bomber = models.BooleanField(null=True)
     is_blocked = models.BooleanField(null=True)
 
+    class Meta:
+        verbose_name = "UserData"
+        verbose_name_plural = "UsersData"
+
 class BomberData(models.Model):
     id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=150)
@@ -17,3 +21,7 @@ class BomberData(models.Model):
     last_phone = models.CharField(max_length=128, null=True)
     last_launch = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "BomberData"
+        verbose_name_plural = "BombersData"
