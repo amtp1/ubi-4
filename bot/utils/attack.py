@@ -1,7 +1,5 @@
-import traceback
 from json import loads
 from asyncio import sleep
-from asyncio.exceptions import TimeoutError
 
 from pathlib import Path
 import traceback
