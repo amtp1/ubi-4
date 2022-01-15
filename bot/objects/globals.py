@@ -7,4 +7,5 @@ db_engine = None
 bot = None
 dp = None
 
+phone = None
 is_mailing = False
