@@ -1,7 +1,10 @@
+import traceback
 from json import loads
 from asyncio import sleep
+from asyncio.exceptions import TimeoutError
 
 from pathlib import Path
+import traceback
 from aiohttp import ClientSession
 
 import yaml
@@ -63,6 +66,8 @@ class Phone:
                         await self.bomber_data.update(circles=self.count_circles)
                         return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
                 await sleep(3)
+        except TimeoutError:
+            await self.session.close()
         except Exception as e:
             logger.error(e)
             await self.session.close()
