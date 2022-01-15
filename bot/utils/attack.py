@@ -66,14 +66,13 @@ class Phone:
                         await self.bomber_data.update(circles=self.count_circles)
                         return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
                 await sleep(3)
-        except TimeoutError:
-            await self.session.close()
         except Exception as e:
-            logger.error(e)
-            await self.session.close()
-            await self.bomber_data.update(circles=str(self.count_circles))
-            return await bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message_id+1,
-                                text=f"<b><i>Error message</i></b>: {e}")
+            if e.__class__.__name__ != "TimeoutError":
+                logger.error(e)
+                await self.session.close()
+                await self.bomber_data.update(circles=str(self.count_circles))
+                return await bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message_id+1,
+                                    text=f"<b><i>Error message</i></b>: {e}")
 
     async def stop(self):
         self.is_process = False
