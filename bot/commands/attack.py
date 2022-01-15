@@ -1,6 +1,7 @@
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
+from objects import globals
 from objects.globals import dp, bot
 from models.models import *
 from language_temp.language import Language
@@ -62,11 +63,10 @@ async def get_phone_targ(message: Message, state: FSMContext):
                 ])
             await message.answer(text=language.text(type="stop_attack"), reply_markup=markup)
             await bomber_data.update(last_launch=dt.now(), last_phone=message.text)
-            phone = Phone(user_id=message.from_user.id, phone=message.text)
-            await phone.start(message=message)
+            globals.phone = Phone(user_id=message.from_user.id, phone=message.text)
+            await globals.phone.start(message=message)
 
 @dp.callback_query_handler(lambda query: query.data=="stop_attack")
-async def stop_attack(query: CallbackQuery):
-    phone = Phone(user_id=query.from_user.id)
-    await phone.stop()
+async def stop_attack(query: CallbackQuery, state: FSMContext):
+    await globals.phone.stop()
     return await bot.edit_message_text(chat_id=query.from_user.id, message_id=query.message.message_id, text="✅")
