@@ -98,11 +98,12 @@ class Phone:
         if self.count_circles!="∞":
             self.count_circles = int(self.count_circles) - 1
             if self.count_circles == 0:
-                await self.bomber_data.update(circles=self.count_circles)
+                await self.bomber_data.update(circles=self.count_circles) # Update count circles after stopped attack.
                 return await message.answer(text="❌Атака остановлена\n"f"🗑Количество кругов израсходовано!")
         await sleep(3)
 
     async def stop(self):
+        await self.bomber_data.update(circles=str(self.count_circles)) # Update count circles after stopped attack.
         await sleep(1)
         self.is_process = False
         if self.session is not None:
